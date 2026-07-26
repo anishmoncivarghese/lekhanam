@@ -1,0 +1,56 @@
+# Dependencies
+node_modules/
+
+# Build output
+out/
+dist/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# macOS
+.DS_Store
+*.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor
+.vscode/settings.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Native build artifacts
+build/Release
+*.node
+
+# Signing — never commit these
+*.provisionprofile
+*.p12
+*.p8
+*.pem
+*.cer
+*.mobileprovision
+
+# electron-builder cache
+buildResources/
+
+# TypeScript
+*.tsbuildinfo
+
+# Test output
+test-results/
+playwright-report/
+
+# On-device AI models — too large for git; supply separately (see README)
+resources/models/
+resources/apple-ai-cli/apple-ai-cli
+
+# electron-vite cache artifacts
+electron.vite.config.*.mjs

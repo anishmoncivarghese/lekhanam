@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <!-- App Sandbox: required for all MAS processes -->
+    <key>com.apple.security.app-sandbox</key>
+    <true/>
+    <!-- Inherit: marks this as a sandboxed child of the parent app.
+         Without this, macOS treats each Electron helper as an independent
+         sandboxed app, causing the "differs from previously opened versions"
+         Gatekeeper alert that triggered the App Store rejection. -->
+    <key>com.apple.security.inherit</key>
+    <true/>
+    <!-- Hardened-runtime entitlements are checked per-binary by the kernel, not
+         carried by `inherit`. The renderer helper is the JIT-heaviest process in
+         Chromium, so it must declare allow-jit independently. Without this, V8
+         aborts in ThreadIsolation::RegisterJitAllocation under MAS sandbox. -->
+    <key>com.apple.security.cs.allow-jit</key>
+    <true/>
+  </dict>
+</plist>

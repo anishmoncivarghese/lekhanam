@@ -1,0 +1,156 @@
+{
+  "name": "lekhanam",
+  "version": "1.5.1",
+  "description": "A local book writing tool for macOS",
+  "author": {
+    "name": "Anish Monci Varghese"
+  },
+  "main": "out/main/index.js",
+  "scripts": {
+    "postinstall": "node scripts/patch-cli-spinners.js",
+    "dev": "ELECTRON_RUN_AS_NODE= electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "ELECTRON_RUN_AS_NODE= electron-vite preview",
+    "build:apple-ai": "swiftc resources/apple-ai-cli/main.swift -parse-as-library -module-name AppleAICLI -o resources/apple-ai-cli/apple-ai-cli && chmod +x resources/apple-ai-cli/apple-ai-cli",
+    "dist": "ELECTRON_RUN_AS_NODE= electron-rebuild && npm run build:apple-ai && npm run build && ELECTRON_RUN_AS_NODE= electron-builder --mac --arm64 && npm run staple",
+    "dist:mas": "ELECTRON_RUN_AS_NODE= electron-rebuild && npm run build:apple-ai && npm run build && ELECTRON_RUN_AS_NODE= electron-builder --config electron-builder-mas.yml && bash scripts/sign-mas.sh",
+    "dist:test": "npm run build:apple-ai && npm run build && ELECTRON_RUN_AS_NODE= electron-builder --mac --arm64 --config.mac.notarize=false --config.mac.identity=null",
+    "staple": "V=$(node -e \"process.stdout.write(require('./package.json').version)\") && codesign --sign \"Developer ID Application: Anish Varghese (65UF42MSBU)\" --timestamp dist/Lekhanam-$V-arm64.dmg && xcrun notarytool submit dist/Lekhanam-$V-arm64.dmg --keychain-profile \"lekhanam-notary\" --wait && xcrun stapler staple dist/Lekhanam-$V-arm64.dmg && xcrun stapler validate dist/Lekhanam-$V-arm64.dmg"
+  },
+  "build": {
+    "appId": "com.lekhanam.app",
+    "productName": "Lekhanam",
+    "buildVersion": "18",
+    "icon": "build/icon.png",
+    "afterPack": "scripts/after-pack-mas.js",
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64"
+          ]
+        }
+      ],
+      "category": "public.app-category.productivity",
+      "minimumSystemVersion": "12.0",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "notarize": false,
+      "extendInfo": {
+        "NSMicrophoneUsageDescription": "Lekhanam uses your microphone to transcribe your speech into text as you write. For example, you can dictate a paragraph out loud and it will be inserted directly into your chapter. All audio is processed entirely on your Mac using on-device speech recognition — nothing is recorded or sent to any server."
+      }
+    },
+    "mas": {
+      "identity": "3rd Party Mac Developer Application: Anish Varghese (65UF42MSBU)",
+      "entitlements": "build/entitlements.mas.plist",
+      "entitlementsInherit": "build/entitlements.mas.inherit.plist",
+      "hardenedRuntime": false,
+      "notarize": false,
+      "provisioningProfile": "build/lekhanam.provisionprofile",
+      "extendInfo": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSMicrophoneUsageDescription": "Lekhanam uses your microphone to transcribe your speech into text as you write. For example, you can dictate a paragraph out loud and it will be inserted directly into your chapter. All audio is processed entirely on your Mac using on-device speech recognition — nothing is recorded or sent to any server."
+      }
+    },
+    "dmg": {
+      "background": "build/dmg-background.png",
+      "iconSize": 120,
+      "window": {
+        "width": 540,
+        "height": 380
+      },
+      "contents": [
+        {
+          "x": 145,
+          "y": 185,
+          "type": "file"
+        },
+        {
+          "x": 390,
+          "y": 185,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ],
+      "iconTextSize": 13,
+      "format": "UDZO"
+    },
+    "files": [
+      "out/**/*"
+    ],
+    "asarUnpack": [
+      "node_modules/nodejs-whisper/**",
+      "node_modules/node-llama-cpp/**"
+    ],
+    "extraResources": [
+      {
+        "from": "resources/models",
+        "to": "models",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "resources/apple-ai-cli/apple-ai-cli",
+        "to": "apple-ai-cli/apple-ai-cli"
+      }
+    ],
+    "directories": {
+      "output": "dist"
+    }
+  },
+  "dependencies": {
+    "@tiptap/extension-character-count": "^2.11.5",
+    "@tiptap/extension-font-family": "^2.27.2",
+    "@tiptap/extension-highlight": "^2.11.5",
+    "@tiptap/extension-image": "^2.11.5",
+    "@tiptap/extension-placeholder": "^2.27.2",
+    "@tiptap/extension-table": "^2.27.2",
+    "@tiptap/extension-table-cell": "^2.27.2",
+    "@tiptap/extension-table-header": "^2.27.2",
+    "@tiptap/extension-table-row": "^2.27.2",
+    "@tiptap/extension-text-align": "^2.11.5",
+    "@tiptap/extension-text-style": "^2.27.2",
+    "@tiptap/extension-underline": "^2.11.5",
+    "@tiptap/pm": "^2.11.5",
+    "@tiptap/react": "^2.11.5",
+    "@tiptap/starter-kit": "^2.11.5",
+    "date-fns": "^4.1.0",
+    "docx": "^9.6.0",
+    "docx-preview": "^0.3.7",
+    "epub-gen-memory": "^1.1.2",
+    "harper.js": "^1.9.0",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^4.2.0",
+    "konva": "^9.3.22",
+    "mammoth": "^1.12.0",
+    "node-llama-cpp": "^3.17.1",
+    "nodejs-whisper": "^0.2.9",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-konva": "^18.2.10",
+    "uuid": "^11.0.3",
+    "vosk-browser": "^0.0.8",
+    "zustand": "^5.0.3"
+  },
+  "devDependencies": {
+    "@electron-toolkit/tsconfig": "^1.0.1",
+    "@electron-toolkit/utils": "^3.0.0",
+    "@playwright/test": "^1.58.2",
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.1",
+    "@types/uuid": "^10.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "electron": "^41.0.0",
+    "electron-builder": "^26.0.0",
+    "electron-rebuild": "^3.2.9",
+    "electron-vite": "^3.0.0",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.0"
+  }
+}

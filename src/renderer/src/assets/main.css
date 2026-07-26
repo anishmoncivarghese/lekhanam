@@ -1,0 +1,337 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cream: #faf8f5;
+  --color-cream-dark: #f0ece4;
+  --color-amber-accent: #d97706;
+  --color-amber-light: #fef3c7;
+  --color-slate-text: #1c1917;
+  --color-slate-muted: #78716c;
+  --color-border: #e7e0d8;
+  --font-serif: Georgia, 'Times New Roman', serif;
+}
+
+/* ── Theme tokens (light default) ─────────────────────────────────────────── */
+:root {
+  --bg: #f9f8f7;
+  --bg-card: #fdfcfb;
+  --bg-subtle: #eae6e0;
+  --bg-amber: #fef3c7;
+  --border-amber: #fde68a;
+  --fg: #1c1917;
+  --fg-muted: #78716c;
+  --fg-faint: #a8a29e;
+  --border: #ddd4cc;
+  --today-title: #92400e;
+  --today-value: #78350f;
+  --bg-surround: #e0dbd4;
+  --margin-area-bg: var(--bg-card);
+
+  /* Surfaces & dividers */
+  --surface-raised: #f7f4f1;
+  --divider: #ede9e3;
+  --border-accent: #d4ccc0;
+
+  /* Semantic colors */
+  --color-success: #059669;
+  --color-warning: #dc2626;
+  --color-info: #0284c7;
+
+  /* Overlay */
+  --overlay-scrim: rgba(0, 0, 0, 0.4);
+
+  /* Shadow palette */
+  --shadow-card-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-card-md: 0 4px 8px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.06);
+  --shadow-card-lg: 0 10px 15px rgba(0,0,0,0.1), 0 4px 6px rgba(0,0,0,0.05);
+  --shadow-float: 0 20px 25px rgba(0,0,0,0.15), 0 8px 10px rgba(0,0,0,0.08);
+
+  /* Accent colors */
+  --accent: #d97706;
+  --accent-hover: #b45309;
+  --accent-active: #92400e;
+  --accent-light: #f59e0b;
+
+  /* Focus ring */
+  --focus-ring: rgba(217, 119, 6, 0.35);
+}
+
+/* ── Dark mode overrides ───────────────────────────────────────────────────── */
+html.dark {
+  --bg: #0f0e0d;
+  --bg-card: #262320;
+  --bg-subtle: #2e2b28;
+  --bg-amber: #2a1d09;
+  --border-amber: #4a3510;
+  --fg: #f0ebe4;
+  --fg-muted: #a8a29e;
+  --fg-faint: #9c9490;
+  --border: #3d3936;
+  --today-title: #f59e0b;
+  --today-value: #fbbf24;
+  --bg-surround: #0f0d0c;
+  --margin-area-bg: var(--bg-card);
+
+  /* Surfaces & dividers */
+  --surface-raised: #35302d;
+  --divider: #3e3a37;
+  --border-accent: #484541;
+
+  /* Semantic colors */
+  --color-success: #10b981;
+  --color-warning: #ef4444;
+  --color-info: #06b6d4;
+
+  /* Overlay */
+  --overlay-scrim: rgba(0, 0, 0, 0.6);
+
+  /* Shadow palette */
+  --shadow-card-sm: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-card-md: 0 4px 8px rgba(0,0,0,0.3);
+  --shadow-card-lg: 0 10px 15px rgba(0,0,0,0.3);
+  --shadow-float: 0 20px 25px rgba(0,0,0,0.4);
+
+  /* Accent colors — slightly brighter in dark mode for legibility */
+  --accent: #f59e0b;
+  --accent-hover: #d97706;
+  --accent-active: #b45309;
+  --accent-light: #fbbf24;
+
+  /* Focus ring */
+  --focus-ring: rgba(217, 119, 6, 0.4);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* ── Panel slide-in animation ───────────────────────────────────────────────── */
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+.panel-slide-in {
+  animation: slideInRight 150ms ease-out;
+}
+
+/* ── Modal enter animation ──────────────────────────────────────────────────── */
+@keyframes modalIn {
+  from { transform: scale(0.96) translateY(8px); opacity: 0; }
+  to   { transform: scale(1)    translateY(0);   opacity: 1; }
+}
+.modal-enter {
+  animation: modalIn 150ms ease-out;
+}
+
+/* ── Global focus states ────────────────────────────────────────────────────── */
+*:focus {
+  outline: none;
+}
+*:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* TipTap editor content styles */
+.tiptap-editor,
+.tiptap-editor > div,
+.tiptap-editor .ProseMirror {
+  outline: none !important;
+}
+
+.tiptap-editor .ProseMirror {
+  font-family: var(--editor-font-family, 'Palatino Linotype', Palatino, 'Book Antiqua', serif);
+  font-size: var(--editor-font-size, 12pt);
+  line-height: var(--editor-line-height, 1.6);
+  color: var(--fg);
+  caret-color: var(--fg);
+  /* Professional typography: at least 2 lines on each side of a page break (PDF export) */
+  widows: 2;
+  orphans: 2;
+}
+
+.tiptap-editor .ProseMirror p {
+  margin-bottom: 0.75em;
+  line-height: var(--editor-line-height, 1.6);
+}
+
+.tiptap-editor .ProseMirror h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  /* Keep heading with following paragraph (PDF export via CSS Paged Media) */
+  break-after: avoid;
+  page-break-after: avoid;
+}
+
+.tiptap-editor .ProseMirror h2 {
+  font-size: 1.375rem;
+  font-weight: 600;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+  /* Keep heading with following paragraph (PDF export via CSS Paged Media) */
+  break-after: avoid;
+  page-break-after: avoid;
+}
+
+.tiptap-editor .ProseMirror ul,
+.tiptap-editor .ProseMirror ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1em;
+}
+
+.tiptap-editor .ProseMirror li {
+  margin-bottom: 0.25em;
+}
+
+.tiptap-editor .ProseMirror mark {
+  background-color: var(--bg-amber);
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+
+.tiptap-editor .ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: var(--fg-faint);
+  pointer-events: none;
+  height: 0;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--fg-faint);
+}
+
+/* Traffic lights spacing for hiddenInset titlebar */
+.drag-region {
+  -webkit-app-region: drag;
+  height: 28px;
+}
+.no-drag {
+  -webkit-app-region: no-drag;
+}
+
+/* ── Spell / Grammar check decorations ─────────────────────────────────────── */
+.spell-error {
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-skip-ink: none;
+  cursor: pointer;
+  border-radius: 1px;
+}
+.spell-error-spell   { text-decoration-color: #ef4444; } /* red   — spelling */
+.spell-error-grammar { text-decoration-color: #f59e0b; } /* amber — grammar  */
+
+/* ── Inline annotation (comment) marks ─────────────────────────────────────── */
+.annotation-mark {
+  background-color: #fecaca;
+  border-radius: 2px;
+  cursor: pointer;
+}
+html.dark .annotation-mark {
+  background-color: #450a0a;
+  color: #fca5a5;
+}
+.annotation-mark:hover {
+  background-color: #fca5a5;
+}
+html.dark .annotation-mark:hover {
+  background-color: #7f1d1d;
+}
+
+/* ── Inline footnote markers ─────────────────────────────────────────────────── */
+sup.footnote-ref {
+  color: var(--accent);
+  font-size: 0.65em;
+  font-weight: 700;
+  vertical-align: super;
+  line-height: 0;
+  cursor: pointer;
+  user-select: none;
+}
+sup.footnote-ref:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+
+/* ── Tables ─────────────────────────────────────────────────────────────────── */
+.tiptap-editor .ProseMirror table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 1em;
+  table-layout: fixed;
+}
+.tiptap-editor .ProseMirror table td,
+.tiptap-editor .ProseMirror table th {
+  border: 1px solid var(--border);
+  padding: 5px 10px;
+  vertical-align: top;
+  min-width: 60px;
+  position: relative;
+}
+.tiptap-editor .ProseMirror table th {
+  background-color: var(--bg-subtle);
+  font-weight: 600;
+}
+.tiptap-editor .ProseMirror table .selectedCell::after {
+  background: var(--bg-amber);
+  content: '';
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0.4;
+}
+
+/* ── Focus paragraph mode ───────────────────────────────────────────────────── */
+.tiptap-editor.fp-active .ProseMirror > * {
+  opacity: 0.18;
+  transition: opacity 0.15s;
+}
+.tiptap-editor.fp-active .ProseMirror > .is-fp-active {
+  opacity: 1;
+}
+
+/* ── Lekhanam View — reading-mode typography ────────────────────────────────── */
+.lekhanam-view .ProseMirror {
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--fg);
+  outline: none;
+  cursor: default;
+  user-select: text;
+}
+.lekhanam-view .ProseMirror p { margin-bottom: 1em; line-height: 1.75; }
+.lekhanam-view .ProseMirror h1 { font-size: 1.5rem; font-weight: 700; margin-top: 1.75rem; margin-bottom: 0.75rem; }
+.lekhanam-view .ProseMirror h2 { font-size: 1.2rem; font-weight: 600; margin-top: 1.4rem; margin-bottom: 0.5rem; }
+.lekhanam-view .ProseMirror h3 { font-size: 1rem; font-weight: 600; margin-top: 1.1rem; margin-bottom: 0.4rem; }
+.lekhanam-view .ProseMirror ul,
+.lekhanam-view .ProseMirror ol { padding-left: 1.5rem; margin-bottom: 1em; }
+.lekhanam-view .ProseMirror li { margin-bottom: 0.3em; line-height: 1.75; }
+.lekhanam-view .ProseMirror mark { background-color: var(--bg-amber); border-radius: 2px; padding: 0 2px; }
+

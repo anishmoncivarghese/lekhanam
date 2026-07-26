@@ -1,0 +1,37 @@
+appId: com.lekhanam.app
+productName: Lekhanam
+buildVersion: '18'
+icon: build/icon.png
+afterPack: scripts/after-pack-mas.js
+mac:
+  target:
+    - target: mas
+      arch:
+        - arm64
+  category: public.app-category.productivity
+  minimumSystemVersion: '12.0'
+  hardenedRuntime: false
+  gatekeeperAssess: false
+  identity: null
+  notarize: false
+  extendInfo:
+    ITSAppUsesNonExemptEncryption: false
+    # Required for MAS apps NOT signed with @electron/osx-sign. Tells Electron
+    # which Team ID to use for application-group-scoped IPC (otherwise
+    # @electron/osx-sign would auto-extract from the cert).
+    ElectronTeamID: "65UF42MSBU"
+    NSMicrophoneUsageDescription: "Lekhanam uses your microphone to transcribe your speech into text as you write. For example, you can dictate a paragraph out loud and it will be inserted directly into your chapter. All audio is processed entirely on your Mac using on-device speech recognition — nothing is recorded or sent to any server."
+files:
+  - out/**/*
+asarUnpack:
+  - node_modules/nodejs-whisper/**
+  - node_modules/node-llama-cpp/**
+extraResources:
+  - from: resources/models
+    to: models
+    filter:
+      - '**/*'
+  - from: resources/apple-ai-cli/apple-ai-cli
+    to: apple-ai-cli/apple-ai-cli
+directories:
+  output: dist

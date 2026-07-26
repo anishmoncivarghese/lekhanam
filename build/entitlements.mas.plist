@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <!-- Required: App Sandbox for Mac App Store -->
+    <key>com.apple.security.app-sandbox</key>
+    <true/>
+
+    <!-- Required: must match provisioning profile exactly -->
+    <key>com.apple.application-identifier</key>
+    <string>65UF42MSBU.com.lekhanam.app</string>
+    <key>com.apple.developer.team-identifier</key>
+    <string>65UF42MSBU</string>
+
+    <!-- Required for MAS apps NOT signed with @electron/osx-sign.
+         Enables Chromium's MachPortRendezvousServer parent↔child IPC under
+         the App Sandbox on macOS 14+. Per the Electron docs:
+         https://www.electronjs.org/docs/latest/tutorial/mac-app-store-submission-guide
+         (under "Extra steps without electron-osx-sign"). Must be present on
+         the parent's entitlements only — helpers inherit. -->
+    <!-- Per the Electron MAS submission guide ("Extra steps without
+         electron-osx-sign" hidden details box) and per @nmggithub on
+         electron/electron#51351: this MUST be the team-id-prefixed bundle
+         identifier (TEAM_ID.bundle_id), NOT the portal-style "group."
+         identifier. macOS 26's sandbox profile only permits
+         `mach-register <APP_ID>.MachPortRendezvousServer.*` when the
+         entitlement value matches Chromium's mach-name prefix, and
+         Chromium constructs that prefix as <TEAM_ID>.<bundle_id> via
+         BaseBundleID(). Using `group.com.lekhanam.app` here was wrong
+         and was the actual root cause of the build 12 crash — see the
+         2026-05-03 entry in issue_log.md and issue 51351 follow-up. -->
+    <key>com.apple.security.application-groups</key>
+    <array>
+      <string>65UF42MSBU.com.lekhanam.app</string>
+    </array>
+
+    <!-- File access: user-selected files via open/save dialogs -->
+    <key>com.apple.security.files.user-selected.read-write</key>
+    <true/>
+
+    <!-- Microphone access: voice dictation (vosk-browser) -->
+    <key>com.apple.security.device.microphone</key>
+    <true/>
+
+    <!-- Electron: JIT compilation for JavaScript engine -->
+    <key>com.apple.security.cs.allow-jit</key>
+    <true/>
+
+    <!-- Network: outbound connections (model download info, links) -->
+    <key>com.apple.security.network.client</key>
+    <true/>
+
+    <!-- NOTE: com.apple.security.cs.disable-library-validation is intentionally
+         EXCLUDED here. It is present in the DMG build entitlements but is
+         incompatible with the Mac App Store sandbox. node-llama-cpp and
+         nodejs-whisper are disabled at runtime via process.mas guard. -->
+
+    <!-- iCloud Documents sync (optional, user-controlled).
+         Container iCloud.app.lekhanam is already registered in the portal
+         and authorized in the provisioning profile. -->
+    <key>com.apple.developer.icloud-services</key>
+    <array>
+      <string>CloudDocuments</string>
+    </array>
+    <key>com.apple.developer.icloud-container-identifiers</key>
+    <array>
+      <string>iCloud.app.lekhanam</string>
+    </array>
+  </dict>
+</plist>
